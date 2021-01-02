@@ -1,0 +1,136 @@
+%!TEX root = ../Report.tex
+
+\chapter{File Structure of \\the Project}
+\label{app:sus}
+\kaishu
+\hspace*{5mm}本附录用于展示实验目录的文件结构。
+下面的结构图展示了项目文件中的关键文件，以及他们之间的所属关系。
+项目名称为\textbf{\sffamily{Naive\_cmd}}，意味较为简陋、不够成熟的命令行。\\
+\hspace*{5mm}文件的上下级关系表示某个文件属于某一个目录，
+或者上级模块调用了下级模块，即调用与被调用的关系。
+\\*[7cm]
+%\documentclass{minimal}
+\usetikzlibrary{trees}
+
+\tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{selected}=[draw=red,fill=red!30]
+\tikzstyle{optional}=[dashed,fill=gray!50]
+\begin{tikzpicture}[%
+  grow via three points={one child at (0.5,-0.7) and
+  two children at (0.5,-0.7) and (0.5,-1.4)},
+  edge from parent path={[->](\tikzparentnode.south) |- (\tikzchildnode.west)}]
+  \node {Naive\_cmd}
+  child { node[selected]{Naive\_cmd.v}}
+    child { node [optional]{clkgen.v}}
+    child {node {HEX and LED}
+     child {node {Hexdisplay.v}}
+     child {node {LEDdisplay.v}}
+    }
+      child [missing] {}
+    child [missing] {}
+    child { node {Keyboard}
+      child { node {Keyboard.v}
+        child { node {ps2\_keyboard.v}}
+        child { node {word.v} }
+        child { node[optional] {Ascii\_rom}
+        }
+      }
+    }					
+    child [missing] {}
+    child [missing] {}
+    child { node {VGA}
+      child {node {VGA.v}
+        child {node {VGA\_ram.v}}
+        child {node {ROM\_show.v}}
+      }
+    }				
+    child [missing] {}				
+    child [missing] {}	
+    child { node {Audio}
+        child {node {Audio.v}
+          child {node {一些控制模块}}
+          child {node [optional]{songs}}
+        }
+    }
+    child [missing] {}				
+    child [missing] {}
+    child [missing] {}
+   % child {node {HEX and LED}}
+    %child [missing] {}	
+    %child [missing] {}
+    child { 
+          node [selected] {CPU\_overall}
+          child {node {ALU.v}}
+          child { 
+            node [selected]{CPU\_overall.v}
+            child {node {Registers.v}}
+            child {node {data\_ram.v}}
+            child {node {ALU\_part.v}}
+            child {node {Decode.v}
+              child {node {De\_Helper.v}}
+              child {node {program\_counter.v}}
+              child {node {Fetch\_code.v}
+                child{node [optional]{instructions}}
+              }
+            }
+          }
+    };
+    
+\end{tikzpicture}
+%==============================================================================================================================================
+
+\chapter{Scripts of Special \\Purpose}
+%\large
+\songti
+\hspace*{5mm}因为每次都要打开\file{Mars}先编译再导出机器码较为繁琐，所以我们提供了一个
+从\file{Mars}中获取机器码的脚本，如下所示：
+\begin{lstlisting}[style=seminar, caption = {提取代码脚本}]
+import mars.*;
+import java.util.*;
+
+public class MarsCompiler {
+	public static void main(String... args) throws Exception {
+		if (args.length != 1) {
+			System.err.println("Usage: java MarsCompiler input");
+			System.exit(1);
+			}
+
+		Globals.initialize(false);
+		MIPSprogram program = new MIPSprogram();
+		program.readSource(args[0]);
+			
+		ErrorList errors = null;
+			
+		try {
+			program.tokenize();
+			errors = program.assemble(new ArrayList(Arrays.asList(program)), true, true);
+			}
+		catch (ProcessingException e) {
+			errors = e.errors();
+			}
+			
+		if (errors.errorsOccurred() || errors.warningsOccurred()) {
+			for (ErrorMessage em : (ArrayList<ErrorMessage>)errors.getErrorMessages()) {
+				System.err.println(String.format("[%s] %s@%d:%d %s",
+				em.isWarning() ? "WRN" : "ERR",
+				em.getFilename(), em.getLine(), em.getPosition(),
+				em.getMessage()));
+				}
+			System.exit(2);
+		}
+	
+		for (ProgramStatement ps : (ArrayList<ProgramStatement>)program.getMachineList())
+		System.out.println(String.format("%08x", ps.getBinaryStatement()));
+		}
+}
+\end{lstlisting}
+
+这里运用了\file{Mars}作为\code{java}语言的特点，利用了本身固有的类来导出机器码。
+
+只需要在命令行执行以下的指令：
+\begin{lstlisting}[style = seminar]
+javac --class-path MARS4_5.jar -Xlint:unchecked MarsCompiler.java
+java -cp MARS4_5.jar MarsCompiler overall.asm > overall.txt
+\end{lstlisting}
+即可将机器码导出到指定的文件中。以上为\file{Macbook + iTerm2 + zsh}下的指令，
+\file{Windows}下可能有区别。

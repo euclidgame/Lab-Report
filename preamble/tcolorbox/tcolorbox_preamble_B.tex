@@ -1,0 +1,4 @@
+% counter from previous example
+\newtcbox[use counter from=pabox]{\pbbox}[2][]{%
+  colback=red!5!white,colframe=red!75!black,fonttitle=\bfseries,
+  title=(\thetcbcounter) #2,#1}

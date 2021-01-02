@@ -1,0 +1,13 @@
+% \usepackage{cleveref}
+\tcbset{
+  defstyle/.style={fonttitle=\bfseries\upshape, fontupper=\slshape,
+              arc=0mm, colback=blue!5!white,colframe=blue!75!black},
+  theostyle/.style={fonttitle=\bfseries\upshape, fontupper=\slshape,
+               colback=red!10!white,colframe=red!75!black},
+}
+\newtcbtheorem[number within=subsection,crefname={definition}{definitions}]%
+  {Definition}{Definition}{defstyle}{def}
+\newtcbtheorem[use counter from=Definition,crefname={theorem}{theorems}]%
+  {Theorem}{Theorem}{theostyle}{theo}
+\newtcbtheorem[use counter from=Definition,crefname={corollary}{corollaries}]%
+  {Corollary}{Corollary}{theostyle}{cor}

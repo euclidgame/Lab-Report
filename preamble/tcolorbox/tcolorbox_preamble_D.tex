@@ -1,0 +1,14 @@
+\tcbset{
+  texexp/.style={colframe=red!50!yellow!50!black, colback=red!50!yellow!5!white,
+      coltitle=red!50!yellow!3!white,
+      fonttitle=\small\sffamily\bfseries, fontupper=\small, fontlower=\small},
+  example/.style 2 args={texexp,
+      title={Example \thetcbcounter: #1},label={#2}},
+}
+
+
+\newtcblisting{texexp}[1]{texexp,#1}
+\newtcblisting[auto counter,number within=section]{texexptitled}[3][]{%
+  example={#2}{#3},#1}
+\newtcolorbox[use counter from=texexptitled]{texexptitledspec}[3][]{%
+  example={#2}{#3},#1}

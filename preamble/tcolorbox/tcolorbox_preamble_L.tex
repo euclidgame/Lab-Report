@@ -1,0 +1,37 @@
+% \tcbuselibrary{skins,xparse}
+
+\NewTColorBox[auto counter,number within=section]{exercise}{+!O{}}{%
+  enhanced,colframe=green!20!black,colback=yellow!10!white,coltitle=green!40!black,
+  fonttitle=\bfseries,
+  underlay={\begin{tcbclipinterior}
+    \shade[inner color=green!80!yellow,outer color=yellow!10!white]
+      (interior.north west) circle (2cm);
+    \draw[help lines,step=5mm,yellow!80!black,shift={(interior.north west)}]
+      (interior.south west) grid (interior.north east);
+    \end{tcbclipinterior}},
+  title={Exercise~\thetcbcounter:},
+  label={exercise@\thetcbcounter},
+  attach title to upper=\quad,
+  after upper={\par\hfill\textcolor{green!40!black}%
+    {\itshape Solution on page~\pageref{solution@\thetcbcounter}}},
+  lowerbox=ignored,
+  savelowerto=solutions/exercise-\thetcbcounter.tex,
+  record={\string\solution{\thetcbcounter}{solutions/exercise-\thetcbcounter.tex}},
+  #1
+}
+
+\NewTotalTColorBox{\solution}{mm}{%
+  enhanced,colframe=red!20!black,colback=yellow!10!white,coltitle=red!40!black,
+  fonttitle=\bfseries,
+  underlay={\begin{tcbclipinterior}
+    \shade[inner color=red!50!yellow,outer color=yellow!10!white]
+      (interior.north west) circle (2cm);
+    \draw[help lines,step=5mm,yellow!80!black,shift={(interior.north west)}]
+      (interior.south west) grid (interior.north east);
+    \end{tcbclipinterior}},
+  title={Solution of Exercise~\ref{exercise@#1} on page~\pageref{exercise@#1}:},
+  phantomlabel={solution@#1},
+  attach title to upper=\par,
+}{\input{#2}}
+
+\tcbset{no solution/.style={no recording,after upper=}}

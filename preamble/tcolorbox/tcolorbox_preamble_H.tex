@@ -1,0 +1,5 @@
+\newtcolorbox[auto counter,number within=section,
+  number freestyle={(Q/\noexpand\thesection/\noexpand\Alph{\tcbcounter})},
+  ]{phbox}[2][]{%
+  colback=yellow!15!white,colframe=blue!75!black,fonttitle=\bfseries,
+  title=Question~\thetcbcounter: #2,#1}

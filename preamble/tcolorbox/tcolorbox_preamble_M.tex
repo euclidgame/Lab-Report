@@ -1,0 +1,8 @@
+\newtcblisting{myownlisting}[2][]{
+  enhanced,colback=red!5!white,colframe=red!75!black,fonttitle=\bfseries,
+  colbacktitle=red!50!yellow,before skip=6pt,after skip=6pt,
+  title={#2},#1}
+
+\newtcbexternalizetcolorbox{exmyownlisting}{myownlisting}%
+  {minipage,environment with percent=false}%
+  {before skip=6pt,after skip=6pt}% same values as for mylisting

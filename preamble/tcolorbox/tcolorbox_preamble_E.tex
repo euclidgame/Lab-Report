@@ -1,0 +1,7 @@
+\newtcolorbox[auto counter,number within=section,list inside=exam]{texercise}[2][]{%
+  texercisestyle,
+  listing file={solutions/texercise\thetcbcounter.tex},
+  label={exe:#2},
+  record={\string\processsol{solutions/texercise\thetcbcounter.tex}{#2}},
+  title={Exercise \thetcbcounter\hfill\mdseries Solution on page \pageref{sol:#2}},
+  list text={Exercise with solution on page \pageref{sol:#2}},#1}
